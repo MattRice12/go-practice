@@ -3,74 +3,95 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"strings"
+	"strconv"
 	"time"
 )
 
-func main() {
-	playerMove := generatePlayerMove()
-	compMove := generateCompMove()
-	outcome := victoryConditions(playerMove, compMove)
-	printOutcome(playerMove, compMove, outcome)
+// Outcome tracks the wins/losses/ties in the game
+type Outcome struct {
+	playerWins int
+	compWins   int
+	ties       int
 }
 
-func printOutcome(playerMove, compMove, outcome string) {
+func main() {
+	const playTimes int = 1000
+	outcome := Outcome{}
+	runGame(playTimes, &outcome)
+}
+
+func runGame(times int, outcome *Outcome) {
+	for i := 1; i < times; i++ {
+		playerMove := generateMove()
+		compMove := generateMove()
+		victoryConditions(playerMove, compMove, outcome)
+		printOutcome(playerMove, compMove, outcome)
+	}
+}
+
+func printOutcome(playerMove string, compMove string, outcome *Outcome) {
+	playerWins := "Player-" + strconv.Itoa(outcome.playerWins)
+	compWins := " | Comp-" + strconv.Itoa(outcome.compWins)
+	ties := " | Ties-" + strconv.Itoa(outcome.ties)
+	print("\033[H\033[2J")
 	fmt.Println("Player: ", playerMove)
 	fmt.Println("Comp: ", compMove)
-	fmt.Println("Result: ", outcome)
+	fmt.Println("Result: ", playerWins+compWins+ties)
+	time.Sleep(time.Millisecond)
 }
 
-func victoryConditions(p, c string) string {
-	pWin := "Player Wins!"
-	cWin := "Computer Wins!"
-	if p == c {
-		return "Tie"
-	} else if p == "Paper" && c == "Rock" {
-		return pWin
-	} else if p == "Rock" && c == "Scissors" {
-		return pWin
-	} else if p == "Scissors" && c == "Paper" {
-		return pWin
-	}
-	return cWin
-}
-
-func generatePlayerMove() string {
-	move := ""
-	fmt.Print("Rock, Paper, or Scissors?: ")
-	fmt.Scanln(&move)
-	move = strings.Title(strings.ToLower(move))
-	move = validatePlayerMove(move)
-	return move
-}
-
-func includes(slice []string, item string) bool {
-	for _, a := range slice {
-		if a == item {
-			return true
+func victoryConditions(p string, c string, o *Outcome) {
+	choiceSlice := []string{"Rock", "Paper", "Scissors", "Rock"}
+	for i := range choiceSlice[:len(choiceSlice)-1] {
+		if p == choiceSlice[i] && c == choiceSlice[i+1] {
+			o.playerWins++
+			return
 		}
 	}
-	return false
-}
-
-func validatePlayerMove(move string) string {
-	choiceSlice := []string{"Rock", "Paper", "Scissors"}
-	if includes(choiceSlice, move) == false {
-		fmt.Print("Invalid Input...")
-		return generatePlayerMove()
+	if p == c {
+		o.ties++
+	} else {
+		o.compWins++
 	}
-	return move
 }
 
 func random(min, max int) int {
-	rand.Seed(time.Now().Unix())
+	rand.Seed(int64(time.Now().Nanosecond()))
 	return rand.Intn(max-min) + min
 }
 
-func generateCompMove() string {
+func generateMove() string {
 	var move string
 	choiceSlice := []string{"Rock", "Paper", "Scissors"}
 	num := random(0, 3)
 	move = choiceSlice[num]
 	return move
 }
+
+//
+// func generatePlayerMove() string {
+// 	move := ""
+// 	fmt.Print("Rock, Paper, or Scissors?: ")
+// 	fmt.Scanln(&move)
+// 	move = strings.Title(strings.ToLower(move))
+// 	move = validatePlayerMove(move)
+// 	return move
+// }
+//
+// func includes(slice []string, item string) bool {
+// 	for _, a := range slice {
+// 		if a == item {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }
+//
+// func validatePlayerMove(move string) string {
+// 	choiceSlice := []string{"Rock", "Paper", "Scissors"}
+// 	if includes(choiceSlice, move) == false {
+// 		fmt.Print("Invalid Input...")
+// 		return generatePlayerMove()
+// 	}
+// 	return move
+// }
