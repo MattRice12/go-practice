@@ -15,13 +15,13 @@ type Outcome struct {
 }
 
 func main() {
-	const playTimes int = 1000
+	const playTimes int = 1
 	outcome := Outcome{}
 	runGame(playTimes, &outcome)
 }
 
 func runGame(times int, outcome *Outcome) {
-	for i := 1; i < times; i++ {
+	for i := 1; i <= times; i++ {
 		playerMove := generateMove()
 		compMove := generateMove()
 		victoryConditions(playerMove, compMove, outcome)
@@ -44,14 +44,14 @@ func victoryConditions(p string, c string, o *Outcome) {
 	choiceSlice := []string{"Rock", "Paper", "Scissors", "Rock"}
 	for i := range choiceSlice[:len(choiceSlice)-1] {
 		if p == choiceSlice[i] && c == choiceSlice[i+1] {
-			o.playerWins++
+			o.compWins++
 			return
 		}
 	}
 	if p == c {
 		o.ties++
 	} else {
-		o.compWins++
+		o.playerWins++
 	}
 }
 
@@ -86,6 +86,7 @@ func generateMove() string {
 // 	}
 // 	return false
 // }
+//
 //
 // func validatePlayerMove(move string) string {
 // 	choiceSlice := []string{"Rock", "Paper", "Scissors"}
