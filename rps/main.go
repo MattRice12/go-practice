@@ -15,7 +15,7 @@ type Outcome struct {
 }
 
 func main() {
-	const playTimes int = 1
+	const playTimes int = 1000
 	outcome := Outcome{}
 	runGame(playTimes, &outcome)
 }
@@ -29,10 +29,10 @@ func runGame(times int, outcome *Outcome) {
 	}
 }
 
-func printOutcome(playerMove string, compMove string, outcome *Outcome) {
-	playerWins := "Player-" + strconv.Itoa(outcome.playerWins)
-	compWins := " | Comp-" + strconv.Itoa(outcome.compWins)
-	ties := " | Ties-" + strconv.Itoa(outcome.ties)
+func printOutcome(playerMove string, compMove string, o *Outcome) {
+	playerWins := "Player-" + strconv.Itoa(o.playerWins)
+	compWins := " | Comp-" + strconv.Itoa(o.compWins)
+	ties := " | Ties-" + strconv.Itoa(o.ties)
 	print("\033[H\033[2J")
 	fmt.Println("Player: ", playerMove)
 	fmt.Println("Comp: ", compMove)
