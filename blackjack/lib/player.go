@@ -28,22 +28,42 @@ func createHand(d *Deck) []Card {
 	return hand
 }
 
-// HitOrStay Prompts player to hit
-func HitOrStay(p *Player, d *Deck) {
+func playerHitPrompt(p *Player, d *Deck) string {
+	total := HandValue(p)
+	fmt.Println(p.Name, "total:", total)
 	var move string
-	fmt.Println("Hit or Stay?")
+	fmt.Println("\nHit or Stay?")
 	fmt.Scanln(&move)
 	move = strings.ToLower(move)
+	return move
+}
+
+// HitOrStay asks all players if they want to hti or stay
+func HitOrStay(p *Player, d *Deck, g *Game) (Player, *Deck, *Game, string) {
+	var move string
+	if p.Name == g.Players[0].Name {
+		move = playerHitPrompt(p, d)
+	} else {
+		move = compHitOrStay(p, d)
+	}
 	if move == "hit" {
 		draw(p, d)
-		fmt.Println("Player 1: ", p.Hand)
-		HitOrStay(p, d)
 	} else if move == "stay" {
-		return
+		return *p, d, g, move
 	} else {
 		fmt.Println("Sorry, I didn't catch that")
-		HitOrStay(p, d)
+		HitOrStay(p, d, g)
 	}
+	return *p, d, g, move
+}
+
+// CompHitOrStay decides whether computer should hit or stay
+func compHitOrStay(p *Player, d *Deck) string {
+	total := HandValue(p)
+	if total < 16 {
+		return "hit"
+	}
+	return "stay"
 }
 
 func draw(p *Player, d *Deck) {

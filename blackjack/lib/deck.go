@@ -19,11 +19,13 @@ func PrepDeck() Deck {
 }
 
 func createDeck() []Card {
+	// Create empty Slice for type Card
 	deck := []Card{}
 	suits := [4]string{"Heart", "Diamond", "Club", "Spade"}
 	for _, suit := range suits {
 		for value := 2; value <= 14; value++ {
-			valueStr := FixFace(value)
+			// valueStr := StringifyValue(value)
+			valueStr := value
 			card := Card{suit, valueStr}
 			deck = append(deck, card)
 		}
@@ -31,6 +33,7 @@ func createDeck() []Card {
 	return deck
 }
 
+// shuffleDeck replaces card at position[j] with a random card; j++
 func shuffleDeck(deck []Card) []Card {
 	for j := 0; j < 51; j++ {
 		randCard := random(deck)
@@ -40,6 +43,7 @@ func shuffleDeck(deck []Card) []Card {
 	return deck
 }
 
+// random selects a random card in the Card Slice
 func random(d []Card) int {
 	rand.Seed(int64(time.Now().Nanosecond()))
 	return rand.Intn(len(d))

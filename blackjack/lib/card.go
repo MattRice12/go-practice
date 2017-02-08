@@ -5,11 +5,11 @@ import "strconv"
 // Card holds attributes for a card
 type Card struct {
 	Suit  string
-	Value string
+	Value int
 }
 
-// FixFace sets 11+ cards to J, Q, K, A
-func FixFace(v int) string {
+// StringifyValue sets 11+ cards to J, Q, K, A
+func StringifyValue(v int) string {
 	if v == 14 {
 		return "A"
 	} else if v == 13 {
