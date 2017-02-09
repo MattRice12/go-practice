@@ -46,11 +46,12 @@ func HitOrStay(p *Player, d *Deck, g *Game) (Player, *Deck, *Game, string) {
 	} else {
 		move = compHitOrStay(p, d)
 	}
-	if move == "hit" {
+	switch move {
+	case "hit":
 		draw(p, d)
-	} else if move == "stay" {
+	case "stay":
 		return *p, d, g, move
-	} else {
+	default:
 		fmt.Println("Sorry, I didn't catch that")
 		HitOrStay(p, d, g)
 	}

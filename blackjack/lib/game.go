@@ -10,7 +10,7 @@ type Game struct {
 	Players []Player
 }
 
-// PrepPlayers prepares the game
+// PrepPlayers sets value for `game` -- prepares the game
 func PrepPlayers(d *Deck) Game {
 	player1 := CreatePlayer("Matt", d)
 	player2 := CreatePlayer("Hal 9000", d)

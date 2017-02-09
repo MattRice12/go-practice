@@ -10,7 +10,7 @@ type Deck struct {
 	Cards []Card
 }
 
-// PrepDeck creates and shuffles a deck
+// PrepDeck sets value for `deck` -- creates and shuffles a deck
 func PrepDeck() Deck {
 	d := createDeck()
 	d = shuffleDeck(d)
