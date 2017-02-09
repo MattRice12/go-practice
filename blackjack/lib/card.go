@@ -6,6 +6,7 @@ import "strconv"
 type Card struct {
 	Suit  string
 	Value int
+	Face  string
 }
 
 // StringifyValue sets 11+ cards to J, Q, K, A

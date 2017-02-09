@@ -24,9 +24,8 @@ func createDeck() []Card {
 	suits := [4]string{"Heart", "Diamond", "Club", "Spade"}
 	for _, suit := range suits {
 		for value := 2; value <= 14; value++ {
-			// valueStr := StringifyValue(value)
-			valueStr := value
-			card := Card{suit, valueStr}
+			face := StringifyValue(value)
+			card := Card{suit, value, face}
 			deck = append(deck, card)
 		}
 	}

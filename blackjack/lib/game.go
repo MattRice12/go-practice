@@ -19,57 +19,22 @@ func PrepPlayers(d *Deck) Game {
 	return game
 }
 
-// PlayRound plays the round
-func PlayRound(d *Deck, g *Game) {
-	showRound(g)
-	if checkBust(g) {
+// PlayRound (1) shows scores, (2) checks for a bust, (3)
+func (g *Game) PlayRound(d *Deck) {
+	g.showRound()
+	if checkBust(g) || checkStay(g) {
 		return
 	}
-	players := []Player{}
-	moves := []string{}
-	for _, p := range g.Players {
-		var m string
-		p, d, g, m = HitOrStay(&p, d, g)
-		moves = append(moves, m)
-		players = append(players, p)
+	for i := range g.Players {
+		g.Players[i].playerTurn(d, g)
 	}
-	game := Game{players}
-	if moves[0] == moves[1] {
-		findWinner(g)
-		return
-	}
-	PlayRound(d, &game)
-}
-
-func findWinner(g *Game) {
-	var finalCount []int
-	for _, p := range g.Players {
-		total := HandValue(&p)
-		fmt.Println(p.Name+"'s'", "total:", total)
-		finalCount = append(finalCount, total)
-	}
-	if finalCount[0] > finalCount[1] {
-		fmt.Println(g.Players[0].Name, "Wins!")
-	} else {
-		fmt.Println(g.Players[1].Name, "Wins!")
-	}
-}
-
-func showRound(g *Game) {
-	print("\033[H\033[2J")
-	for _, p := range g.Players {
-		if p.Name == g.Players[0].Name {
-			fmt.Println(p.Name+":", p.Hand)
-		} else {
-			fmt.Println(p.Name+":", p.Hand[0], strings.Repeat("{ Hidden }", len(p.Hand)-1))
-		}
-	}
+	g.PlayRound(d)
 }
 
 func checkBust(g *Game) bool {
 	for _, p := range g.Players {
-		if Bust(&p) {
-			ShowResults(g)
+		if p.Bust() {
+			g.showResults()
 			fmt.Println("Player " + p.Name + " Busts!")
 			return true
 		}
@@ -77,28 +42,74 @@ func checkBust(g *Game) bool {
 	return false
 }
 
-// ShowResults displays results
-func ShowResults(g *Game) {
-	print("\033[H\033[2J")
-	for _, p := range g.Players {
-		fmt.Println(p.Name+":", p.Hand)
+// Bust checks if the player's card values are over 21
+func (p Player) Bust() bool {
+	if p.Total > 21 {
+		return true
+	}
+	return false
+}
+
+func checkStay(g *Game) bool {
+	if (g.Players[0].Stay != true) || (g.Players[1].Stay != true) {
+		return false
+	}
+	findWinner(g)
+	return true
+}
+
+func findWinner(g *Game) {
+	g.showResults()
+	if g.Players[0].Total > g.Players[1].Total {
+		fmt.Println(g.Players[0].Name, "Wins!")
+	} else {
+		fmt.Println(g.Players[1].Name, "Wins!")
+	}
+}
+
+func (p *Player) playerTurn(d *Deck, g *Game) {
+	g.showRound()
+	if p.Stay != true {
+		p.HitOrStay(d, g)
 	}
 }
 
 // HandValue checks total value of player's hand
-func HandValue(p *Player) int {
+func (p *Player) HandValue() {
 	total := 0
 	for _, card := range p.Hand {
 		total += card.Value
 	}
-	return total
+	p.Total = total
 }
 
-// Bust checks if the player's card values are over 21
-func Bust(p *Player) bool {
-	total := HandValue(p)
-	if total > 21 {
-		return true
+// showResults displays results at beginning of each round
+func (g *Game) showRound() {
+	print("\033[H\033[2J")
+	for _, p := range g.Players {
+		if p.Name == g.Players[0].Name {
+			p.revealedCards()
+		} else {
+			fmt.Println(p.Name+":", p.ShowHand()[0], strings.Repeat("{ Hidden }", len(p.Hand)-1))
+			fmt.Println("Total: ?")
+		}
+		fmt.Println("")
 	}
-	return false
+}
+
+// showResults displays final results
+func (g *Game) showResults() {
+	print("\033[H\033[2J")
+	for _, p := range g.Players {
+		p.revealedCards()
+		fmt.Println("")
+	}
+}
+
+func (p *Player) revealedCards() {
+	fmt.Print(p.Name + ": ")
+	for i := range p.Hand {
+		fmt.Print(p.ShowHand()[i] + " ")
+	}
+	fmt.Println("\nTotal:", p.Total)
 }

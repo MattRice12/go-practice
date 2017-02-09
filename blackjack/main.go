@@ -6,6 +6,6 @@ func main() {
 	deck := lib.PrepDeck()
 	game := lib.PrepPlayers(&deck)
 
-	lib.PlayRound(&deck, &game)
+	game.PlayRound(&deck)
 	// lib.ShowResults(&game)
 }
