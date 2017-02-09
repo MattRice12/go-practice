@@ -68,5 +68,5 @@ func quadVal(n Num) Num {
 
 // Struct Types Reference -- Pointing; no return
 func quadRef(n *Num) {
-	n.N = n.N * 4
+	n.N = doubleVal(doubleVal(n.N))
 }
