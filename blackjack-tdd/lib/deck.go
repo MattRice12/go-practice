@@ -11,10 +11,25 @@ type Deck struct {
 }
 
 // PrepDeck turns a Card slice into a Deck
-func PrepDeck() Deck {
+func PrepDeck(nd int) Deck {
 	d := CreateDeck()
 	deck := Deck{d}
+	decks := []Deck{}
+	for i := 0; i < nd; i++ {
+		decks = append(decks, deck)
+	}
+	deck = flatten(&decks)
 	return deck
+}
+
+func flatten(d *[]Deck) Deck {
+	var flatDeck []Card
+	for _, deck := range *d {
+		for _, card := range deck.Cards {
+			flatDeck = append(flatDeck, card)
+		}
+	}
+	return Deck{flatDeck}
 }
 
 // CreateDeck creates deck

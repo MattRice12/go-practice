@@ -8,7 +8,8 @@ import (
 )
 
 func TestCreateHand(t *testing.T) {
-	deck := PrepDeck()
+	numDecks := 1
+	deck := PrepDeck(numDecks)
 	name := "Player" + strconv.Itoa(1)
 	player := Player{name, []Card{}, 0, false}
 	player.CreateHand(&deck)
@@ -21,7 +22,8 @@ func TestCreateHand(t *testing.T) {
 func TestCreatePlayer(t *testing.T) {
 	assert := assert.New(t)
 
-	deck := PrepDeck()
+	numDecks := 1
+	deck := PrepDeck(numDecks)
 	player := CreatePlayer(&deck, 1)
 	if player.Name != "Player1" {
 		t.Fatalf("Expected Player Name to be `Player1`; got `%v`.", player.Name)
@@ -40,7 +42,8 @@ func TestCreatePlayer(t *testing.T) {
 }
 
 func TestPrepPlayers(t *testing.T) {
-	deck := PrepDeck()
+	numDecks := 1
+	deck := PrepDeck(numDecks)
 	players := PrepPlayers(&deck)
 	if len(players) != 4 {
 		t.Errorf("Expected 4 players; got %v palyers", len(players))
@@ -50,7 +53,8 @@ func TestPrepPlayers(t *testing.T) {
 }
 
 func TestDraw(t *testing.T) {
-	deck := PrepDeck()
+	numDecks := 1
+	deck := PrepDeck(numDecks)
 	p := CreatePlayer(&deck, 1)
 	p.Draw(&deck)
 	assert.Equal(t, 3, len(p.Hand), "After first draw, player should have 3 cards")
